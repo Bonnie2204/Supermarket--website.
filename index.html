@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>BNG ENTERPRISES | Smart Supermarket Cart</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: linear-gradient(145deg, #f8fafc 0%, #eef2f5 100%);
+      color: #0a2540;
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+
+    /* DARK MODE STYLES (dynamic via class) */
+    body.dark {
+      background: #121826;
+      color: #eef2ff;
+    }
+
+    body.dark header {
+      background: #1e293b;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid #334155;
+    }
+
+    body.dark .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark .card h3 {
+      color: #facc15;
+    }
+
+    body.dark button {
+      background: #3b4259;
+      color: #f0f3fa;
+      border: 1px solid #5b6e8c;
+    }
+
+    body.dark button:hover {
+      background: #4f5e7e;
+      transform: scale(1.02);
+    }
+
+    body.dark #themeBtn {
+      background: #facc15;
+      color: #0f172a;
+      border: none;
+    }
+
+    body.dark .cart-panel {
+      background: #0f172a;
+      border-left: 1px solid #334155;
+    }
+
+    body.dark .cart-item {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+    }
+
+    body.dark .checkout-btn {
+      background: #facc15;
+      color: #0f172a;
+    }
+
+    body.dark #low {
+      background: #2d3a4e;
+      border-left: 6px solid #facc15;
+      color: #e2e8f0;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffffdd;
+      backdrop-filter: blur(2px);
+      background: white;
+      border-radius: 48px;
+      padding: 0.8rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #1e6f3f, #0f4c2c);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    body.dark h1 {
+      background: linear-gradient(135deg, #facc15, #ffb347);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    #themeBtn {
+      background: #1e293b;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 60px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: 0.2s;
+    }
+
+    #themeBtn:hover {
+      transform: scale(0.96);
+      background: #0f172a;
+      color: white;
+    }
+
+    main {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    #low {
+      background: #e6f7ec;
+      padding: 1rem 1.5rem;
+      border-radius: 28px;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      border-left: 8px solid #2b7e3a;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      display: inline-block;
+      border-bottom: 4px solid #f5b042;
+      padding-bottom: 0.3rem;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 32px;
+      padding: 1.5rem 1rem 1.8rem;
+      text-align: center;
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+      transition: all 0.25s ease;
+      cursor: default;
+      border: 1px solid #e2edf2;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: #1f5e3a;
+    }
+
+    .card p {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin: 0.8rem 0;
+    }
+
+    button {
+      background: #2c7a4a;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.8rem;
+      font-weight: bold;
+      border-radius: 60px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background: #1f5e3a;
+      transform: scale(0.97);
+    }
+
+    /* Cart Section */
+    .cart-section {
+      margin-top: 2rem;
+      background: #ffffffc9;
+      border-radius: 44px;
+      padding: 1.2rem 1.8rem;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark .cart-section {
+      background: #0f172acc;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      border-bottom: 2px dashed #b9d8c1;
+      padding-bottom: 0.6rem;
+    }
+
+    .cart-header h3 {
+      font-size: 1.7rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #cartCount {
+      background: #f5b042;
+      color: #1e2a2e;
+      border-radius: 40px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .cart-items-list {
+      min-height: 120px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fefefe;
+      margin: 10px 0;
+      padding: 12px 15px;
+      border-radius: 60px;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 1px solid #dde7e6;
+    }
+
+    .cart-item span:first-child {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .cart-item-actions button {
+      background: #d9534f;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      margin-left: 8px;
+      box-shadow: none;
+    }
+
+    .cart-item-actions button:hover {
+      background: #c9302c;
+    }
+
+    .cart-total {
+      margin-top: 1rem;
+      text-align: right;
+      font-size: 1.5rem;
+      font-weight: 800;
+      border-top: 2px solid #cbd5e1;
+      padding-top: 0.8rem;
+    }
+
+    .checkout-btn {
+      background: #ff914d;
+      color: #1f2a2e;
+      font-size: 1.2rem;
+      padding: 0.8rem 2rem;
+      margin-top: 1rem;
+      width: 100%;
+      border-radius: 60px;
+    }
+
+    .checkout-btn:hover {
+      background: #ff7a2f;
+      transform: scale(0.98);
+    }
+
+    .empty-cart-msg {
+      text-align: center;
+      padding: 2rem;
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 1rem;
+      }
+      header {
+        flex-direction: column;
+        gap: 12px;
+        border-radius: 28px;
+        text-align: center;
+      }
+      .cart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .cart-item {
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: 24px;
+      }
+      .cart-item-actions {
+        text-align: right;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🛒 BNG Supermarket</h1>
+    <button id="themeBtn" aria-label="Dark/Light mode">🌙 Dark Mode</button>
+  </header>
+
+  <main>
+    <p id="low">✨ Welcome to <i><b>BNG ENTERPRISE</b></i> — where you purchase products at your convenient price. Fresh groceries, best value! 🇰🇪</p>
+    <h2>📦 Fresh Picks</h2>
+
+    <div class="products" id="productContainer">
+      <!-- Milk & Bread will be here plus extra products for better experience -->
+      <div class="card" data-name="Milk" data-price="60">
+        <h3>🥛 Milk</h3>
+        <p>Price: Ksh 60</p>
+        <button class="addBtn" data-price="60" data-name="Milk">Add to Cart</button>
+      </div>
+
+      <div class="card" data-name="Bread" data-price="50">
+        <h3>🍞 Bread</h3>
+        <p>Price: Ksh 50</p>
+        <button class="addBtn" data-price="50" data-name="Bread">Add to Cart</button>
+      </div>
+
+      <div class="card" data-name="Eggs (6pcs)" data-price="120">
+        <h3>🥚 Eggs (6pcs)</h3>
+        <p>Price: Ksh 120</p>
+        <button class="addBtn" data-price="120" data-name="Eggs (6pcs)">Add to Cart</button>
+      </div>
+
+      <div class="card" data-name="Cooking Oil 1L" data-price="320">
+        <h3>🫒 Cooking Oil 1L</h3>
+        <p>Price: Ksh 320</p>
+        <button class="addBtn" data-price="320" data-name="Cooking Oil 1L">Add to Cart</button>
+      </div>
+
+      <div class="card" data-name="Rice (1kg)" data-price="210">
+        <h3>🍚 Rice (1kg)</h3>
+        <p>Price: Ksh 210</p>
+        <button class="addBtn" data-price="210" data-name="Rice (1kg)">Add to Cart</button>
+      </div>
+
+      <div class="card" data-name="Tomatoes (1kg)" data-price="95">
+        <h3>🍅 Tomatoes (1kg)</h3>
+        <p>Price: Ksh 95</p>
+        <button class="addBtn" data-price="95" data-name="Tomatoes (1kg)">Add to Cart</button>
+      </div>
+    </div>
+
+    <!-- SHOPPING CART PANEL -->
+    <div class="cart-section">
+      <div class="cart-header">
+        <h3>🛍️ Your Cart <span id="cartCount">(0)</span></h3>
+        <button id="clearCartBtn" style="background:#a03e2c; padding:0.4rem 1.2rem;">🗑️ Clear Cart</button>
+      </div>
+      <div id="cartItemsList" class="cart-items-list">
+        <div class="empty-cart-msg">🛒 Cart is empty. Add some delicious items!</div>
+      </div>
+      <div class="cart-total">
+        💵 Total: <span id="cartTotal">0</span> Ksh
+      </div>
+      <button id="checkoutBtn" class="checkout-btn">✅ Checkout & Pay</button>
+    </div>
+  </main>
+  <footer>
+    🌟 BNG ENTERPRISES — Quality & Trust since 2025 | Fresh, Affordable & Reliable
+  </footer>
+
+  <script>
+    // ---------- CART STATE ----------
+    let cart = []; // each item: { name: string, price: number, id: unique, quantity: number }
+    let nextId = 1;
+
+    // DOM elements
+    const cartItemsContainer = document.getElementById('cartItemsList');
+    const cartTotalSpan = document.getElementById('cartTotal');
+    const cartCountSpan = document.getElementById('cartCount');
+    const clearCartBtn = document.getElementById('clearCartBtn');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const themeBtn = document.getElementById('themeBtn');
+
+    // Helper: update entire cart UI
+    function updateCartUI() {
+      // update cart count (total quantity)
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCountSpan.innerText = `(${totalItems})`;
+
+      // update total price
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      cartTotalSpan.innerText = totalPrice.toFixed(0);
+
+      // render cart items list
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `<div class="empty-cart-msg">🛒 Cart is empty. Add milk, bread & more!</div>`;
+        return;
+      }
+
+      cartItemsContainer.innerHTML = '';
+      cart.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item';
+        itemDiv.setAttribute('data-id', item.id);
+        
+        // left side: name + price + qty
+        const detailsSpan = document.createElement('span');
+        detailsSpan.style.flex = '3';
+        detailsSpan.innerHTML = `<strong>${escapeHtml(item.name)}</strong> &nbsp;| ${item.price} Ksh &nbsp;✖️ ${item.quantity} = <b>${item.price * item.quantity} Ksh</b>`;
+        
+        // action buttons group
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'cart-item-actions';
+        
+        const incrementBtn = document.createElement('button');
+        incrementBtn.innerText = '+';
+        incrementBtn.style.background = '#2b7a3e';
+        incrementBtn.style.padding = '0.2rem 0.8rem';
+        incrementBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          updateQuantity(item.id, item.quantity + 1);
+        });
+        
+        const decrementBtn = document.createElement('button');
+        decrementBtn.innerText = '−';
+        decrementBtn.style.background = '#b5651e';
+        decrementBtn.style.padding = '0.2rem 0.8rem';
+        decrementBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (item.quantity > 1) {
+            updateQuantity(item.id, item.quantity - 1);
+          } else {
+            removeItemFromCart(item.id);
+          }
+        });
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.innerText = '✖ Remove';
+        removeBtn.style.background = '#b91c1c';
+        removeBtn.style.padding = '0.2rem 0.9rem';
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          removeItemFromCart(item.id);
+        });
+        
+        actionsDiv.appendChild(decrementBtn);
+        actionsDiv.appendChild(incrementBtn);
+        actionsDiv.appendChild(removeBtn);
+        
+        itemDiv.appendChild(detailsSpan);
+        itemDiv.appendChild(actionsDiv);
+        cartItemsContainer.appendChild(itemDiv);
+      });
+    }
+
+    // helper to escape HTML
+    function escapeHtml(str) {
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+
+    // update item quantity
+    function updateQuantity(id, newQuantity) {
+      const itemIndex = cart.findIndex(item => item.id === id);
+      if (itemIndex !== -1) {
+        if (newQuantity <= 0) {
+          cart.splice(itemIndex, 1);
+        } else {
+          cart[itemIndex].quantity = newQuantity;
+        }
+        updateCartUI();
+        saveCartToLocal();
+      }
+    }
+
+    // remove item entirely
+    function removeItemFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      updateCartUI();
+      saveCartToLocal();
+    }
+
+    // add product logic (merging if same name)
+    function addProductToCart(productName, productPrice) {
+      // check if item with same name exists
+      const existing = cart.find(item => item.name === productName);
+      if (existing) {
+        existing.quantity += 1;
+        updateCartUI();
+        saveCartToLocal();
+        showMiniToast(`➕ ${productName} added (now ${existing.quantity})`);
+      } else {
+        const newItem = {
+          id: nextId++,
+          name: productName,
+          price: productPrice,
+          quantity: 1
+        };
+        cart.push(newItem);
+        updateCartUI();
+        saveCartToLocal();
+        showMiniToast(`✨ ${productName} added to cart!`);
+      }
+    }
+
+    // simple toast-like notification (non-intrusive)
+    let toastTimeout = null;
+    function showMiniToast(message) {
+      let toastEl = document.getElementById('dynamicToast');
+      if (!toastEl) {
+        toastEl = document.createElement('div');
+        toastEl.id = 'dynamicToast';
+        toastEl.style.position = 'fixed';
+        toastEl.style.bottom = '20px';
+        toastEl.style.left = '50%';
+        toastEl.style.transform = 'translateX(-50%)';
+        toastEl.style.backgroundColor = '#2c3e2f';
+        toastEl.style.color = 'white';
+        toastEl.style.padding = '10px 24px';
+        toastEl.style.borderRadius = '50px';
+        toastEl.style.fontWeight = 'bold';
+        toastEl.style.zIndex = '9999';
+        toastEl.style.boxShadow = '0 8px 18px rgba(0,0,0,0.2)';
+        toastEl.style.backdropFilter = 'blur(6px)';
+        toastEl.style.fontSize = '0.9rem';
+        document.body.appendChild(toastEl);
+      }
+      toastEl.innerText = message;
+      toastEl.style.opacity = '1';
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastEl.style.opacity = '0';
+        setTimeout(() => {
+          if (toastEl.parentNode) toastEl.style.display = 'none';
+          toastEl.style.display = 'block';
+        }, 300);
+      }, 1800);
+    }
+
+    // clear all cart
+    function clearCart() {
+      if (cart.length > 0) {
+        cart = [];
+        updateCartUI();
+        saveCartToLocal();
+        showMiniToast('🗑️ Cart cleared!');
+      } else {
+        showMiniToast('Cart is already empty');
+      }
+    }
+
+    // checkout handler
+    function handleCheckout() {
+      if (cart.length === 0) {
+        showMiniToast('⚠️ Your cart is empty. Add some fresh items first!');
+        return;
+      }
+      const total = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+      const itemNames = cart.map(i => `${i.name} x${i.quantity}`).join(', ');
+      alert(`✅ Thank you for shopping at BNG ENTERPRISES!\n\n🛍️ Items: ${itemNames}\n💰 Total Amount: Ksh ${total.toFixed(0)}\n\n🚚 Your order will be delivered soon. Karibu tena!`);
+      // optional: reset cart after checkout? user might expect reset? but normally it's purchase, let's give option to clear or keep? 
+      // better UX: ask if they want to start fresh after checkout.
+      const resetAfter = confirm("Would you like to empty your cart after this purchase? (Click OK to clear cart, Cancel to keep items)");
+      if (resetAfter) {
+        cart = [];
+        updateCartUI();
+        saveCartToLocal();
+        showMiniToast('🧾 Cart reset. Ready for new shopping!');
+      } else {
+        showMiniToast('🛒 Cart preserved. Keep shopping!');
+      }
+    }
+
+    // LocalStorage persistence
+    function saveCartToLocal() {
+      try {
+        const toStore = {
+          cart: cart,
+          nextId: nextId
+        };
+        localStorage.setItem('bng_cart_data', JSON.stringify(toStore));
+      } catch(e) { console.warn(e); }
+    }
+
+    function loadCartFromLocal() {
+      const saved = localStorage.getItem('bng_cart_data');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.cart && Array.isArray(parsed.cart)) {
+            cart = parsed.cart;
+            nextId = parsed.nextId || (cart.length ? Math.max(...cart.map(c=>c.id),0)+1 : 1);
+            updateCartUI();
+          } else {
+            cart = [];
+            updateCartUI();
+          }
+        } catch(e) { cart = []; updateCartUI(); }
+      } else {
+        cart = [];
+        updateCartUI();
+      }
+    }
+
+    // DARK MODE LOGIC
+    function initTheme() {
+      const savedTheme = localStorage.getItem('bng_theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        themeBtn.innerText = '☀️ Light Mode';
+      } else {
+        document.body.classList.remove('dark');
+        themeBtn.innerText = '🌙 Dark Mode';
+      }
+    }
+
+    function toggleTheme() {
+      if (document.body.classList.contains('dark')) {
+        document.body.classList.remove('dark');
+        localStorage.setItem('bng_theme', 'light');
+        themeBtn.innerText = '🌙 Dark Mode';
+      } else {
+        document.body.classList.add('dark');
+        localStorage.setItem('bng_theme', 'dark');
+        themeBtn.innerText = '☀️ Light Mode';
+      }
+    }
+
+    // Set up event listeners for all "Add to Cart" buttons dynamically (including existing + future)
+    function bindAddButtons() {
+      const addButtons = document.querySelectorAll('.addBtn');
+      addButtons.forEach(btn => {
+        // remove previous listener to avoid duplicates (just in case)
+        btn.removeEventListener('click', addHandler);
+        btn.addEventListener('click', addHandler);
+      });
+    }
+
+    function addHandler(e) {
+      e.stopPropagation();
+      const button = e.currentTarget;
+      const price = parseInt(button.getAttribute('data-price'));
+      const name = button.getAttribute('data-name');
+      if (!isNaN(price) && name) {
+        addProductToCart(name, price);
+      } else {
+        // fallback: try to find parent card data
+        const card = button.closest('.card');
+        if (card) {
+          const pName = card.getAttribute('data-name') || card.querySelector('h3')?.innerText?.replace(/[🥛🍞🥚🫒🍚🍅]/g, '').trim() || 'Item';
+          let pPrice = parseInt(card.getAttribute('data-price'));
+          if (isNaN(pPrice)) {
+            const priceText = card.querySelector('p')?.innerText;
+            const match = priceText?.match(/(\d+)/);
+            pPrice = match ? parseInt(match[0]) : 99;
+          }
+          addProductToCart(pName, pPrice);
+        } else {
+          addProductToCart(name || "Special Item", price || 70);
+        }
+      }
+    }
+
+    // after DOM ready load, set product data attributes properly (ensuring each card has data-name/data-price)
+    function syncProductCards() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        if (!card.getAttribute('data-name')) {
+          const h3 = card.querySelector('h3');
+          let rawName = h3 ? h3.innerText : 'Item';
+          rawName = rawName.replace(/[🥛🍞🥚🫒🍚🍅]/g, '').trim();
+          card.setAttribute('data-name', rawName);
+        }
+        if (!card.getAttribute('data-price')) {
+          const pricePara = card.querySelector('p');
+          let priceVal = 60;
+          if (pricePara) {
+            const matches = pricePara.innerText.match(/(\d+)/);
+            if (matches) priceVal = parseInt(matches[0]);
+          }
+          card.setAttribute('data-price', priceVal);
+        }
+        // ensure button inside has correct attributes
+        const btn = card.querySelector('.addBtn');
+        if (btn) {
+          btn.setAttribute('data-name', card.getAttribute('data-name'));
+          btn.setAttribute('data-price', card.getAttribute('data-price'));
+        }
+      });
+    }
+
+    // initialize full app
+    function init() {
+      syncProductCards();
+      loadCartFromLocal();
+      bindAddButtons();
+      initTheme();
+      themeBtn.addEventListener('click', toggleTheme);
+      clearCartBtn.addEventListener('click', clearCart);
+      checkoutBtn.addEventListener('click', handleCheckout);
+      
+      // optional: observe if dynamic product changes but static html so fine
+    }
+
+    // call init when page ready
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
